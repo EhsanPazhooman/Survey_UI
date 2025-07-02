@@ -1,4 +1,4 @@
-import BaseService from "./BaseAxios";
+import BaseAxios from "./BaseAxios";
 
 /**
  * Auth API service
@@ -6,19 +6,18 @@ import BaseService from "./BaseAxios";
 const AuthApi = {
   /**
    * Admin Login
-   * @param {Object} credentials-Login credentials
-   * @param {string} credentials.username-Admin username
-   * @param {string} credentials.password-Admin password
+   * @param {Object} credentials - Login credentials
+   * @param {string} credentials.username - Admin username
+   * @param {string} credentials.password - Admin password
    * @returns {Promise} API response with token and user data
    */
-
   async Login(credentials) {
     try {
-      const response = await this.post("/login", {
+      const response = await BaseAxios.post("/login", {
         username: credentials.username,
         password: credentials.password,
       });
-      return response;
+      return response.data; // Return response.data instead of response
     } catch (error) {
       throw this.handleError(error);
     }
@@ -30,8 +29,8 @@ const AuthApi = {
    */
   async logout() {
     try {
-      const response = await this.post("/logout");
-      return response;
+      const response = await BaseAxios.post("/logout");
+      return response.data; // Return response.data
     } catch (error) {
       throw this.handleError(error);
     }
@@ -48,7 +47,7 @@ const AuthApi = {
 
       // Simple JWT payload decode
       const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "+");
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split("")

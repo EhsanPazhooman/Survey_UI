@@ -8,7 +8,8 @@ export const useAppStore = defineStore('app', {
     appVersion: '0.0.1',
     appTitle: 'نظرسنجی',
     companyTitle: 'شرکت ویرا نوین نیک آمد',
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'https://localhost:5173',
+    // Fix the API URL - should point to your actual backend
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api', // Change this to your backend URL
     selectedAdminMasterPage: 'feed',
   }),
   actions: {

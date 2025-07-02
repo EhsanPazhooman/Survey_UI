@@ -8,6 +8,7 @@
 
       <form @submit.prevent="handleLogin" class="login-form">
         <BaseInput
+          v-model="loginForm.username"
           name="username"
           type="text"
           label="Username"
