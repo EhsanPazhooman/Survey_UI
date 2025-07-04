@@ -4,6 +4,8 @@ import LoginView from '@/views/auth/Login.vue'
 import TokenReceiver from '@/views/auth/TokenReceiver.vue'
 import { useAuthStore } from '@/stores/auth.store'
 import AdminDashboard from '@/views/admin/Dashboard.vue'
+import AdminLayout from '@/components/layout/AdminLayout.vue'
+import { pinia } from '@/main'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +31,7 @@ const router = createRouter({
     // Admin routes (add these)
     {
       path: '/admin',
+      component: AdminLayout,
       meta: { requiresAuth: true },
       children: [
         {
@@ -58,7 +61,7 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
+  const authStore = useAuthStore(pinia)
   
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/auth/login')

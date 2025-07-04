@@ -132,7 +132,8 @@ export default {
 
       if (result.success) {
         setTimeout(() => {
-          router.push('/admin/Dashboard')
+          console.log('isAuthenticated:', authStore.isAuthenticated)
+          router.push('/admin/dashboard')
         }, 1000)
       } else {
         errorMessage.value = result.error || 'ورود ناموفق بود'
