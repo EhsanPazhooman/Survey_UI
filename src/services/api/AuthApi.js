@@ -13,7 +13,7 @@ const AuthApi = {
    */
   async Login(credentials) {
     try {
-      const response = await BaseAxios.post("/login", {
+      const response = await BaseAxios.post("Account/login", {
         username: credentials.username,
         password: credentials.password,
       });
@@ -29,7 +29,7 @@ const AuthApi = {
    */
   async logout() {
     try {
-      const response = await BaseAxios.post("/logout");
+      const response = await BaseAxios.post("Account/logout");
       return response.data; // Return response.data
     } catch (error) {
       throw this.handleError(error);

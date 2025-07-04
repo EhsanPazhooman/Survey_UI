@@ -9,7 +9,7 @@ export const useAppStore = defineStore('app', {
     appTitle: 'نظرسنجی',
     companyTitle: 'شرکت ویرا نوین نیک آمد',
     // Fix the API URL - should point to your actual backend
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:7032/api', // Change this to your backend URL
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:7032', 
     selectedAdminMasterPage: 'feed',
   }),
   actions: {

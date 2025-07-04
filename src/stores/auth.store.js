@@ -49,10 +49,10 @@ export const useAuthStore = defineStore('auth', {
           throw new Error(response.message || 'Login failed')
         }
 
-        const { token, user_name, token_Expiry } = response.data
+        const { token, user_name, expire_time } = response.data
 
         // Calculate expiry time
-        const expiryDate = new Date(Date.now() + token_Expiry * 1000)
+        const expiryDate = new Date(Date.now() + expire_time * 1000)
 
         // Extract additional user info from JWT token
         const userInfoFromToken = AuthApi.getUserFromToken(token)
@@ -81,7 +81,7 @@ export const useAuthStore = defineStore('auth', {
         this.updateApiToken(token)
 
         // Redirect to admin dashboard
-        await router.push('/admin/dashboard')
+        // await router.push('/admin/dashboard')
 
         return { success: true, user }
       } catch (error) {

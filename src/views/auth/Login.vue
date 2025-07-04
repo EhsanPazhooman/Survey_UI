@@ -132,7 +132,7 @@ export default {
 
       if (result.success) {
         setTimeout(() => {
-          router.push('/admin/dashboard')
+          router.push('/admin/Dashboard')
         }, 1000)
       } else {
         errorMessage.value = result.error || 'ورود ناموفق بود'

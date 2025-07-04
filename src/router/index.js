@@ -3,6 +3,7 @@ import AuthLayout from '@/components/layout/AuthLayout.vue'
 import LoginView from '@/views/auth/Login.vue'
 import TokenReceiver from '@/views/auth/TokenReceiver.vue'
 import { useAuthStore } from '@/stores/auth.store'
+import AdminDashboard from '@/views/admin/Dashboard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +34,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'Dashboard',
-          component: () => import('@/views/admin/Dashboard.vue'), // Create this component
+          component: AdminDashboard
         },
       ],
     },
