@@ -1,18 +1,19 @@
 <template>
   <div class="login-container">
     <div class="login-card">
-      <div class="login-header">
-        <h2>Login to Survey Manager</h2>
-        <p>Please enter your credentials to continue</p>
+      <!-- Logo Section -->
+      <div class="logo-container">
+          <img :src="logo" alt="Logo" class="logo" />
       </div>
 
+      <!-- Login Form -->
       <form @submit.prevent="handleLogin" class="login-form">
         <BaseInput
           v-model="loginForm.username"
           name="username"
           type="text"
-          label="Username"
-          placeholder="Enter your username"
+          label="نام کاربری"
+          placeholder="admin"
           :disabled="isLoading"
           :error="fieldErrors.username"
           required
@@ -21,8 +22,9 @@
         <BaseInput
           v-model="loginForm.password"
           type="password"
-          label="Password"
-          placeholder="Enter your password"
+          name="password"
+          label="رمز عبور"
+          placeholder="••••••"
           :disabled="isLoading"
           :error="fieldErrors.password"
           required
@@ -37,7 +39,7 @@
 
         <button type="submit" :disabled="isLoading || !isFormValid" class="login-button">
           <span v-if="isLoading" class="loading-spinner"></span>
-          {{ isLoading ? 'Logging in...' : 'Login' }}
+          {{ isLoading ? 'در حال ورود...' : 'ورود به سامانه' }}
         </button>
       </form>
     </div>
@@ -47,9 +49,10 @@
 <script>
 import { ref, reactive, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth.store' // import the Pinia auth store
+import { useAuthStore } from '@/stores/auth.store'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseToastBox from '@/components/common/BaseToastBox.vue'
+import logo from '@/assets/logos/WeinnoLogo.png'
 
 export default {
   name: 'LoginComponent',
@@ -89,7 +92,7 @@ export default {
     // Clear errors
     const clearError = () => {
       errorMessage.value = ''
-      authStore.error = null // clear store error too
+      authStore.error = null
     }
 
     const clearFieldErrors = () => {
@@ -102,15 +105,15 @@ export default {
       let isValid = true
 
       if (!loginForm.username.trim()) {
-        fieldErrors.username = 'Username is required'
+        fieldErrors.username = 'نام کاربری الزامی است'
         isValid = false
       }
 
       if (!loginForm.password.trim()) {
-        fieldErrors.password = 'Password is required'
+        fieldErrors.password = 'رمز عبور الزامی است'
         isValid = false
       } else if (loginForm.password.length < 6) {
-        fieldErrors.password = 'Password must be at least 6 characters'
+        fieldErrors.password = 'رمز عبور باید حداقل ۶ کاراکتر باشد'
         isValid = false
       }
 
@@ -128,13 +131,11 @@ export default {
       })
 
       if (result.success) {
-        // Optionally show a toast here if you keep useToast composable
         setTimeout(() => {
           router.push('/admin/dashboard')
         }, 1000)
       } else {
-        // Show error from store or fallback
-        errorMessage.value = result.error || 'Login failed'
+        errorMessage.value = result.error || 'ورود ناموفق بود'
       }
     }
 
@@ -147,6 +148,7 @@ export default {
     )
 
     return {
+      logo,
       loginForm,
       isLoading,
       errorMessage,
@@ -165,46 +167,71 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #f8f9fa;
   padding: 20px;
+  font-family: 'IranYekan';
 }
 
 .login-card {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e9ecef;
+  padding: 25px 60px;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
 }
 
-.login-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 30px 20px;
+/* Logo Section */
+.logo-container {
   text-align: center;
+  margin-bottom: 15px;
 }
 
-.login-header h2 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 600;
+.logo {
+  width: 200px;
+  height: 120px;
+  object-fit: contain;
 }
 
-.login-header p {
-  margin: 0;
-  opacity: 0.9;
-  font-size: 14px;
-}
-
+/* Form Styles */
 .login-form {
-  padding: 30px;
+  width: 100%;
 }
 
+.login-form :deep(.password-wrapper) {
+  position: relative;
+}
+
+.login-form :deep(.password-input) {
+  padding-right: 45px;
+}
+
+.login-form :deep(.password-toggle) {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form :deep(.password-toggle:hover) {
+  color: #6b7280;
+}
+
+
+/* Submit Button */
 .login-button {
   width: 100%;
-  padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px 20px;
+  background-color: #0e256e;
   color: white;
   border: none;
   border-radius: 8px;
@@ -212,22 +239,29 @@ export default {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: 'IranYekan';
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 32px;
 }
 
 .login-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .login-button:disabled {
-  opacity: 0.6;
+  background-color: #9ca3af;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .loading-spinner {
@@ -248,18 +282,46 @@ export default {
   }
 }
 
-/* Responsive design */
+/* Toast positioning */
+.login-form :deep(.toast-container) {
+  margin-bottom: 20px;
+}
+
+/* RTL Support */
+@media (prefers-direction: rtl) {
+  .login-form :deep(.form-input) {
+    direction: rtl;
+    text-align: right;
+  }
+
+  .login-form :deep(.password-input) {
+    padding-right: 16px;
+    padding-left: 45px;
+  }
+
+}
+
+/* Responsive */
 @media (max-width: 480px) {
   .login-container {
     padding: 10px;
   }
 
-  .login-header {
-    padding: 20px;
+  .login-card {
+    padding: 30px 20px;
   }
 
-  .login-form {
-    padding: 20px;
+  .logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .login-form :deep(.form-input) {
+    padding: 12px 14px;
+  }
+
+  .login-button {
+    padding: 14px 20px;
   }
 }
 </style>

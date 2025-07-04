@@ -6,7 +6,14 @@ import router from '@/router'
 class BaseService {
   constructor() {
     this.axiosInstance = null
-    this.initializeAxios()
+    // Do NOT call initializeAxios() here!
+  }
+
+  getAxiosInstance() {
+    if (!this.axiosInstance) {
+      this.initializeAxios()
+    }
+    return this.axiosInstance
   }
 
   initializeAxios() {
@@ -112,19 +119,20 @@ class BaseService {
   }
 
   getAxios(headerOptions = {}) {
+    const instance = this.getAxiosInstance()
     if (Object.keys(headerOptions).length > 0) {
       const customInstance = axios.create({
-        ...this.axiosInstance.defaults,
+        ...instance.defaults,
         headers: {
-          ...this.axiosInstance.defaults.headers,
+          ...instance.defaults.headers,
           ...headerOptions,
         },
       })
-      customInstance.interceptors.request = this.axiosInstance.interceptors.request
-      customInstance.interceptors.response = this.axiosInstance.interceptors.response
+      customInstance.interceptors.request = instance.interceptors.request
+      customInstance.interceptors.response = instance.interceptors.response
       return customInstance
     }
-    return this.axiosInstance
+    return instance
   }
 
   getBaseUrl() {
@@ -135,7 +143,7 @@ class BaseService {
   // HTTP Methods
   async get(url, config = {}) {
     try {
-      const response = await this.axiosInstance.get(url, config)
+      const response = await this.getAxiosInstance().get(url, config)
       return response
     } catch (error) {
       console.error(`GET ${url} failed:`, error)
@@ -145,7 +153,7 @@ class BaseService {
 
   async post(url, data, config = {}) {
     try {
-      const response = await this.axiosInstance.post(url, data, config)
+      const response = await this.getAxiosInstance().post(url, data, config)
       return response
     } catch (error) {
       console.error(`POST ${url} failed:`, error)
@@ -155,7 +163,7 @@ class BaseService {
 
   async put(url, data, config = {}) {
     try {
-      const response = await this.axiosInstance.put(url, data, config)
+      const response = await this.getAxiosInstance().put(url, data, config)
       return response
     } catch (error) {
       console.error(`PUT ${url} failed:`, error)
@@ -165,7 +173,7 @@ class BaseService {
 
   async delete(url, config = {}) {
     try {
-      const response = await this.axiosInstance.delete(url, config)
+      const response = await this.getAxiosInstance().delete(url, config)
       return response
     } catch (error) {
       console.error(`DELETE ${url} failed:`, error)
@@ -218,10 +226,11 @@ class BaseService {
 
   // Update auth token (call this after successful login)
   updateAuthToken(token) {
+    const instance = this.getAxiosInstance()
     if (token) {
-      this.axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
     } else {
-      delete this.axiosInstance.defaults.headers.common['Authorization']
+      delete instance.defaults.headers.common['Authorization']
     }
   }
 }
