@@ -1,4 +1,4 @@
-import BaseAxios from "./BaseAxios";
+import BaseAxios from './BaseAxios'
 
 /**
  * Auth API service
@@ -13,13 +13,13 @@ const AuthApi = {
    */
   async Login(credentials) {
     try {
-      const response = await BaseAxios.post("Account/login", {
+      const response = await BaseAxios.post('Account/login', {
         username: credentials.username,
         password: credentials.password,
-      });
-      return response.data; // Return response.data instead of response
+      })
+      return response.data // Return response.data instead of response
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleError(error)
     }
   },
 
@@ -29,10 +29,10 @@ const AuthApi = {
    */
   async logout() {
     try {
-      const response = await BaseAxios.post("Account/logout");
-      return response.data; // Return response.data
+      const response = await BaseAxios.post('Account/logout')
+      return response.data // Return response.data
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleError(error)
     }
   },
 
@@ -43,28 +43,28 @@ const AuthApi = {
    */
   validateToken(token) {
     try {
-      if (!token) return null;
+      if (!token) return null
 
       // Simple JWT payload decode
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const base64Url = token.split('.')[1]
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
       const jsonPayload = decodeURIComponent(
         atob(base64)
-          .split("")
-          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
-      );
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      )
 
-      const payload = JSON.parse(jsonPayload);
+      const payload = JSON.parse(jsonPayload)
 
       // check if token is expired
       if (payload.exp && payload.exp < Date.now() / 1000) {
-        return null;
+        return null
       }
 
-      return payload;
+      return payload
     } catch (error) {
-      return null;
+      return null
     }
   },
 
@@ -74,16 +74,19 @@ const AuthApi = {
    * @returns {Object|null} User info from token
    */
   getUserFromToken(token) {
-    const payload = this.validateToken(token);
-    if (!payload) return null;
+    const payload = this.validateToken(token)
+    if (!payload) return null
+
+    console.log('JWT Payload:', payload)
 
     return {
-      id: payload.user_id,
+      id: payload.user_Id || payload.user_id,
       username: payload.username,
       group:
-        payload[Object.keys(payload).find((key) => key.includes("groupsid"))] ||
-        "User Group 01",
-    };
+        payload[Object.keys(payload).find((key) => key.includes('groupsid'))] ||
+        payload.primarygroupsid ||
+        'User Group 01',
+    }
   },
 
   /**
@@ -93,28 +96,28 @@ const AuthApi = {
    */
   handleError(error) {
     if (error.response) {
-      const { status, data } = error.response;
+      const { status, data } = error.response
 
       switch (status) {
         case 401:
-          return new Error(data.message || "Invalid credentials");
+          return new Error(data.message || 'Invalid credentials')
         case 403:
-          return new Error("Access denied. Admin privileges required.");
+          return new Error('Access denied. Admin privileges required.')
         case 422:
-          return new Error(data.message || "Validation failed");
+          return new Error(data.message || 'Validation failed')
         case 429:
-          return new Error("Too many login attempts. Please try again later.");
+          return new Error('Too many login attempts. Please try again later.')
         default:
-          return new Error(data.message || "Login failed. Please try again.");
+          return new Error(data.message || 'Login failed. Please try again.')
       }
     }
 
     if (error.request) {
-      return new Error("Network error. Please check your connection.");
+      return new Error('Network error. Please check your connection.')
     }
 
-    return new Error("An unexpected error occurred.");
+    return new Error('An unexpected error occurred.')
   },
-};
+}
 
-export default AuthApi;
+export default AuthApi

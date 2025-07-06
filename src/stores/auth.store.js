@@ -43,19 +43,23 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
 
       try {
+        console.log('Starting login process...')
         const response = await AuthApi.Login(credentials)
+        console.log('Login API response:', response)
 
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Login failed')
         }
 
         const { token, user_name, expire_time } = response.data
+        console.log('Token received:', token ? 'Yes' : 'No')
 
         // Calculate expiry time
         const expiryDate = new Date(Date.now() + expire_time * 1000)
 
         // Extract additional user info from JWT token
         const userInfoFromToken = AuthApi.getUserFromToken(token)
+        console.log('User info from token:', userInfoFromToken)
 
         // Create user object
         const user = {
@@ -72,6 +76,12 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         this.tokenExpiry = expiryDate.toISOString()
 
+        console.log('Auth state updated:', {
+          isAuthenticated: this.isAuthenticated,
+          user: this.user,
+          token: this.token ? 'Present' : 'Missing',
+        })
+
         // Persist to localStorage
         localStorage.setItem('admin_token', token)
         localStorage.setItem('admin_user', JSON.stringify(user))
@@ -81,7 +91,9 @@ export const useAuthStore = defineStore('auth', {
         this.updateApiToken(token)
 
         // Redirect to admin dashboard
-        // await router.push('/admin/dashboard')
+        console.log('Attempting redirect to /admin/dashboard...')
+        await router.push('/admin/dashboard')
+        console.log('Redirect completed')
 
         return { success: true, user }
       } catch (error) {
@@ -266,3 +278,6 @@ export const useAuthGuard = () => {
     },
   }
 }
+
+
+

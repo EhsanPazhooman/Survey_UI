@@ -3,7 +3,7 @@
     <div class="login-card">
       <!-- Logo Section -->
       <div class="logo-container">
-          <img :src="logo" alt="Logo" class="logo" />
+        <img :src="logo" alt="Logo" class="logo" />
       </div>
 
       <!-- Login Form -->
@@ -131,10 +131,8 @@ export default {
       })
 
       if (result.success) {
-        setTimeout(() => {
-          console.log('isAuthenticated:', authStore.isAuthenticated)
-          router.push('/admin/dashboard')
-        }, 1000)
+        // Redirect is handled in the auth store
+        console.log('Login successful, redirecting...')
       } else {
         errorMessage.value = result.error || 'ورود ناموفق بود'
       }
@@ -227,7 +225,6 @@ export default {
   color: #6b7280;
 }
 
-
 /* Submit Button */
 .login-button {
   width: 100%;
@@ -299,7 +296,6 @@ export default {
     padding-right: 16px;
     padding-left: 45px;
   }
-
 }
 
 /* Responsive */
